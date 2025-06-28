@@ -1,10 +1,13 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Car, DollarSign, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { Car, DollarSign, Clock, CheckCircle, AlertCircle, Bell, History } from "lucide-react";
+import NotificationCenter from '../NotificationCenter';
+import TransactionHistory from '../TransactionHistory';
 
 const ConcesionariaDashboard = () => {
+  const [currentView, setCurrentView] = useState<'dashboard' | 'notifications' | 'history'>('dashboard');
+
   const [pendingValuations] = useState([
     { id: 1, vehicleBrand: 'Toyota', vehicleModel: 'Corolla', year: 2021, km: 25000, requestedBy: 'Inmobiliaria Central', status: 'pending' },
     { id: 2, vehicleBrand: 'Honda', vehicleModel: 'Civic', year: 2020, km: 35000, requestedBy: 'Propiedades del Sur', status: 'pending' },
@@ -14,6 +17,14 @@ const ConcesionariaDashboard = () => {
     { id: 1, amount: '$18,500', property: 'Depto 2 amb - Palermo', commission: '$925', status: 'completed' },
     { id: 2, amount: '$22,000', property: 'Casa 3 amb - Belgrano', commission: '$1,100', status: 'processing' },
   ]);
+
+  if (currentView === 'notifications') {
+    return <NotificationCenter userType="concesionaria" onBack={() => setCurrentView('dashboard')} />;
+  }
+
+  if (currentView === 'history') {
+    return <TransactionHistory userType="concesionaria" onBack={() => setCurrentView('dashboard')} />;
+  }
 
   return (
     <div className="space-y-6">
@@ -44,6 +55,39 @@ const ConcesionariaDashboard = () => {
                 <p className="text-white font-bold text-lg">$125K</p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Notifications & History */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <CardContent className="p-4">
+            <Button
+              onClick={() => setCurrentView('notifications')}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 flex items-center justify-center"
+            >
+              <Bell className="w-5 h-5 mr-2" />
+              <div className="text-left">
+                <p className="text-sm font-medium">Notificaciones</p>
+                <p className="text-xs opacity-80">1 nueva</p>
+              </div>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <CardContent className="p-4">
+            <Button
+              onClick={() => setCurrentView('history')}
+              className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-3 flex items-center justify-center"
+            >
+              <History className="w-5 h-5 mr-2" />
+              <div className="text-left">
+                <p className="text-sm font-medium">Historial</p>
+                <p className="text-xs opacity-80">Ver liquidaciones</p>
+              </div>
+            </Button>
           </CardContent>
         </Card>
       </div>

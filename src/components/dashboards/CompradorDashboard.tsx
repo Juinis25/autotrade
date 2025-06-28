@@ -1,13 +1,14 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Heart, Car, Home, MapPin, Calendar } from "lucide-react";
+import { Search, Heart, Car, Home, MapPin, Calendar, Bell, History } from "lucide-react";
 import PropertyCatalog from '../PropertyCatalog';
 import VehicleOfferForm from '../VehicleOfferForm';
+import NotificationCenter from '../NotificationCenter';
+import TransactionHistory from '../TransactionHistory';
 
 const CompradorDashboard = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'catalog' | 'offer'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'catalog' | 'offer' | 'notifications' | 'history'>('dashboard');
   const [selectedProperty, setSelectedProperty] = useState<string>('');
 
   const [featuredProperties] = useState([
@@ -72,6 +73,14 @@ const CompradorDashboard = () => {
     );
   }
 
+  if (currentView === 'notifications') {
+    return <NotificationCenter userType="comprador" onBack={() => setCurrentView('dashboard')} />;
+  }
+
+  if (currentView === 'history') {
+    return <TransactionHistory userType="comprador" onBack={() => setCurrentView('dashboard')} />;
+  }
+
   return (
     <div className="space-y-6">
       {/* Search Bar */}
@@ -119,9 +128,42 @@ const CompradorDashboard = () => {
               </div>
               <div>
                 <p className="text-white/70 text-xs">Mis ofertas</p>
-                <p className="text-white font-bold text-lg">{myOffers.length}</p>
+                <p className="text-white font-bold text-lg">2</p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Notifications & History Quick Access */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <CardContent className="p-4">
+            <Button
+              onClick={() => setCurrentView('notifications')}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 flex items-center justify-center"
+            >
+              <Bell className="w-5 h-5 mr-2" />
+              <div className="text-left">
+                <p className="text-sm font-medium">Notificaciones</p>
+                <p className="text-xs opacity-80">2 nuevas</p>
+              </div>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <CardContent className="p-4">
+            <Button
+              onClick={() => setCurrentView('history')}
+              className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-3 flex items-center justify-center"
+            >
+              <History className="w-5 h-5 mr-2" />
+              <div className="text-left">
+                <p className="text-sm font-medium">Historial</p>
+                <p className="text-xs opacity-80">Ver transacciones</p>
+              </div>
+            </Button>
           </CardContent>
         </Card>
       </div>

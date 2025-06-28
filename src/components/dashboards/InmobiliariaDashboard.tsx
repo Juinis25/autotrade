@@ -1,10 +1,13 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Home, Plus, Car, Eye, MessageSquare, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Home, Plus, Car, Eye, MessageSquare, CheckCircle, Clock, AlertCircle, Bell, History } from "lucide-react";
+import NotificationCenter from '../NotificationCenter';
+import TransactionHistory from '../TransactionHistory';
 
 const InmobiliariaDashboard = () => {
+  const [currentView, setCurrentView] = useState<'dashboard' | 'notifications' | 'history'>('dashboard');
+
   const [properties] = useState([
     { id: 1, title: 'Departamento 2 amb - Palermo', price: '$85,000', vehicleOffers: 3, status: 'active' },
     { id: 2, title: 'Casa 3 amb - Belgrano', price: '$120,000', vehicleOffers: 1, status: 'active' },
@@ -91,6 +94,14 @@ const InmobiliariaDashboard = () => {
     }
   };
 
+  if (currentView === 'notifications') {
+    return <NotificationCenter userType="inmobiliaria" onBack={() => setCurrentView('dashboard')} />;
+  }
+
+  if (currentView === 'history') {
+    return <TransactionHistory userType="inmobiliaria" onBack={() => setCurrentView('dashboard')} />;
+  }
+
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
@@ -128,6 +139,39 @@ const InmobiliariaDashboard = () => {
               <p className="text-white/70 text-xs">Negociando</p>
               <p className="text-white font-bold">3</p>
             </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Notifications & History */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <CardContent className="p-4">
+            <Button
+              onClick={() => setCurrentView('notifications')}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 flex items-center justify-center"
+            >
+              <Bell className="w-5 h-5 mr-2" />
+              <div className="text-left">
+                <p className="text-sm font-medium">Notificaciones</p>
+                <p className="text-xs opacity-80">3 nuevas</p>
+              </div>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+          <CardContent className="p-4">
+            <Button
+              onClick={() => setCurrentView('history')}
+              className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-3 flex items-center justify-center"
+            >
+              <History className="w-5 h-5 mr-2" />
+              <div className="text-left">
+                <p className="text-sm font-medium">Historial</p>
+                <p className="text-xs opacity-80">Ver ventas</p>
+              </div>
+            </Button>
           </CardContent>
         </Card>
       </div>

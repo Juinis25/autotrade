@@ -3,8 +3,13 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, Heart, Car, Home, MapPin, Calendar } from "lucide-react";
+import PropertyCatalog from '../PropertyCatalog';
+import VehicleOfferForm from '../VehicleOfferForm';
 
 const CompradorDashboard = () => {
+  const [currentView, setCurrentView] = useState<'dashboard' | 'catalog' | 'offer'>('dashboard');
+  const [selectedProperty, setSelectedProperty] = useState<string>('');
+
   const [featuredProperties] = useState([
     { 
       id: 1, 
@@ -49,6 +54,24 @@ const CompradorDashboard = () => {
     },
   ]);
 
+  if (currentView === 'catalog') {
+    return <PropertyCatalog onBack={() => setCurrentView('dashboard')} />;
+  }
+
+  if (currentView === 'offer') {
+    return (
+      <VehicleOfferForm
+        propertyTitle={selectedProperty}
+        onBack={() => setCurrentView('dashboard')}
+        onSubmit={(offer) => {
+          console.log('Nueva oferta:', offer);
+          alert('¡Oferta enviada con éxito! La concesionaria la evaluará pronto.');
+          setCurrentView('dashboard');
+        }}
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Search Bar */}
@@ -61,7 +84,11 @@ const CompradorDashboard = () => {
               placeholder="Buscar propiedades..."
               className="flex-1 bg-transparent text-white placeholder:text-white/50 outline-none"
             />
-            <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
+            <Button 
+              size="sm" 
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+              onClick={() => setCurrentView('catalog')}
+            >
               Buscar
             </Button>
           </div>
@@ -129,7 +156,14 @@ const CompradorDashboard = () => {
                       <Button size="sm" variant="outline" className="border-white/30 text-white hover:bg-white/10">
                         <Heart className="w-3 h-3" />
                       </Button>
-                      <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
+                      <Button 
+                        size="sm" 
+                        className="bg-blue-500 hover:bg-blue-600 text-white"
+                        onClick={() => {
+                          setSelectedProperty(property.title);
+                          setCurrentView('offer');
+                        }}
+                      >
                         Ofertar
                       </Button>
                     </div>
@@ -182,7 +216,10 @@ const CompradorDashboard = () => {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-2 gap-3">
-        <Button className="bg-green-500 hover:bg-green-600 text-white py-3">
+        <Button 
+          className="bg-green-500 hover:bg-green-600 text-white py-3"
+          onClick={() => setCurrentView('catalog')}
+        >
           Explorar propiedades
         </Button>
         <Button className="bg-purple-500 hover:bg-purple-600 text-white py-3">
